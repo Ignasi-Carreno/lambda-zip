@@ -17,7 +17,7 @@ def lambda_handler(event, context):
     files_to_zip_dic = selectFilesToZip(allFiles, folder)
 
     for month in files_to_zip_dic:
-      zipFiles(s3_resource, bucket, files_to_zip_dic[month], month, folder)
+      zipFiles(s3_client, s3_resource, bucket, files_to_zip_dic[month], month, folder)
       for file in files_to_zip_dic[month]:
         try:
           print('Deleting ' + file)
