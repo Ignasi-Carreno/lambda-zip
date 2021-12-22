@@ -42,7 +42,11 @@ def selectFilesToZip(allFiles, folder):
       if fileName == folder:
         continue
       
-      fileDate = getFileDateTime(fileName)
+      try:
+        fileDate = getFileDateTime(fileName)
+      except ValueError as exp:
+        print ('Invalid fileName ' + fileName)
+        continue
       
       if fileDate >= currentMonth:
         continue
@@ -68,19 +72,21 @@ def selectFilesToZip(allFiles, folder):
 def getFileDateTime(fileName):
   
   filenameWithoutExtension = Path(fileName).stem
-  splitedByUnderscore = filenameWithoutExtension.split("_")
+  filenameWithoutExtension = filenameWithoutExtension.split("(")[0]
+  filenameWithoutSpaces = filenameWithoutExtension.split(" ")[0]
+  splitedByUnderscore = filenameWithoutSpaces.split("_")
   
-  if "_" in filenameWithoutExtension:
-    date = splitedByUnderscore[0] + splitedByUnderscore[1]
-    date_time_obj = datetime.strptime(date, '%Y%m%d%H%M%S')
-  elif "IMG" in fileName:
+  if "IMG" in fileName:
     date = splitedByUnderscore[0]
     date_time_obj = datetime.strptime(date, 'IMG%Y%m%d%H%M%S')
   elif "VID" in fileName:
     date = splitedByUnderscore[0]
     date_time_obj = datetime.strptime(date, 'VID%Y%m%d%H%M%S')
+  elif "_" in filenameWithoutExtension:
+    date = splitedByUnderscore[0] + splitedByUnderscore[1]
+    date_time_obj = datetime.strptime(date, '%Y%m%d%H%M%S')
   else:
-    raise ValueError('Invalid fileName', fileName)
+    raise ValueError()
     
   #print ("The date is", date_time_obj)
   
